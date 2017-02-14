@@ -24,6 +24,41 @@ def about():
     """Render the website's about page."""
     return render_template('about.html', name="Mary Jane")
 
+#-------------------------------------------------------------------
+@app.route('/contact/', methods=['GET', 'POST'])
+def contact():
+    if (request.method == 'POST'):
+        from_name=request.form['name']
+        from_addr=request.form['address']
+        subject=request.form['subject']
+        msg=request.form['message']
+        send_mail(from_name, from_addr, subject, msg)
+        flash('Message Sent Successfully')
+        return redirect(url_for('home'))
+    return render_template('contact.html')
+
+
+
+    
+def sendemail(from_name, from_addr, to_name,to_addr, subject, msg):
+    from_addr = 'keronthelevite@gmail.com'
+    from_name= "Keron"
+    to_name= 'Keron'
+    to_addr = 'keronyoungjr@yahoo.com'
+    Subject= 'Lab 3  Email Test'
+    message =  """From: {} <{}>\nTo: {} <{}>\nSubject: {}\n{}"""
+    message_to_send = message.format(from_name, from_addr, to_name,to_addr, subject, msg)
+    # Credentials (if needed)
+    
+    username = ''
+    password = ''
+    
+    # The actual mail send
+    server = smtplib.SMTP('smtp.gmail.com:587')
+    server.starttls()
+    server.login(username, password)
+    server.sendmail(from_addr, to_addr, message_to_send)
+    server.quit() 
 
 ###
 # The functions below should be applicable to all Flask apps.
@@ -45,6 +80,8 @@ def add_header(response):
     response.headers['X-UA-Compatible'] = 'IE=Edge,chrome=1'
     response.headers['Cache-Control'] = 'public, max-age=600'
     return response
+
+
 
 
 @app.errorhandler(404)
